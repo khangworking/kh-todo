@@ -6,13 +6,30 @@
   text-rendering: optimizeLegibility;
 }
 
-body {
-  margin: 0;
-  min-width: 320px;
-}
-
-main {
-  max-width: 48rem;
-  margin: 3rem auto;
-  padding: 0 1.5rem;
-}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+main { max-width: 40rem; margin: 3rem auto; padding: 0 1.25rem; }
+h1 { margin-bottom: 2rem; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
+.todo-input > label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+.todo-input-row { display: flex; gap: 0.75rem; }
+.todo-input-row input { flex: 1; min-width: 0; border: 1px solid #94a3b8; border-radius: 0.5rem; padding: 0.75rem; }
+.todo-input-row button { border: 0; border-radius: 0.5rem; padding: 0.75rem 1rem; background: #1d4ed8; color: white; }
+.todo-input-row button:hover { background: #1e40af; }
+.todo-list { list-style: none; padding: 0; margin: 1.5rem 0; }
+.todo-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #cbd5e1; }
+.todo-label { display: flex; flex: 1; align-items: center; gap: 0.75rem; min-width: 0; cursor: pointer; }
+.todo-label input { width: 1.25rem; height: 1.25rem; flex-shrink: 0; accent-color: #1d4ed8; }
+.todo-title { overflow-wrap: anywhere; }
+.is-completed .todo-title { text-decoration: line-through; color: #64748b; }
+.delete-button { flex-shrink: 0; background: transparent; border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 0.5rem 0.75rem; color: #b91c1c; }
+.delete-button:hover { background: #fee2e2; }
+.empty-state { color: #475569; margin-top: 2rem; }
+.todo-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; font-size: 0.875rem; }
+.todo-footer button, .edit-button { border: 1px solid #94a3b8; border-radius: 0.375rem; background: white; color: #172033; padding: 0.5rem 0.75rem; }
+.todo-footer button:disabled { opacity: 0.5; cursor: default; }
+.todo-filters { display: flex; gap: 0.25rem; }
+.todo-filters button[aria-pressed='true'] { background: #1d4ed8; color: white; border-color: #1d4ed8; }
+.todo-edit { flex: 1; min-width: 0; padding: 0.5rem; border: 1px solid #94a3b8; border-radius: 0.375rem; }
