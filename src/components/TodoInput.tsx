@@ -17,9 +17,9 @@ export function TodoInput({ onAdd }: TodoInputProps) {
   }
 
   return (
-    <form className="todo-input" onSubmit={handleSubmit}>
-      <label htmlFor="new-todo">New todo</label>
-      <div className="todo-input-row">
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="new-todo" className="mb-2 block font-semibold">New todo</label>
+      <div className="flex gap-3">
         <input
           id="new-todo"
           type="text"
@@ -27,8 +27,9 @@ export function TodoInput({ onAdd }: TodoInputProps) {
           onChange={event => setTitle(event.target.value)}
           placeholder="What needs to get done?"
           autoComplete="off"
+          className="min-w-0 flex-1 rounded-lg border border-slate-400 p-3 focus-visible:outline-3 focus-visible:outline-blue-600 focus-visible:outline-offset-3"
         />
-        <button type="submit">Add todo</button>
+        <button type="submit" className="cursor-pointer rounded-lg bg-blue-700 px-4 py-3 text-white hover:bg-blue-800 focus-visible:outline-3 focus-visible:outline-blue-600 focus-visible:outline-offset-3">Add todo</button>
       </div>
     </form>
   )

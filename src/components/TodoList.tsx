@@ -9,10 +9,10 @@ interface TodoListProps {
 }
 
 export function TodoList({ todos, onToggle, onDelete, onEdit }: TodoListProps) {
-  if (todos.length === 0) return <p className="empty-state">No todos yet. Add one to get started.</p>
+  if (todos.length === 0) return <p className="mt-8 text-slate-600">No todos yet. Add one to get started.</p>
 
   return (
-    <ul className="todo-list" aria-label="Todos">
+    <ul className="my-6 list-none p-0" aria-label="Todos">
       {todos.map(todo => <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onDelete={onDelete} onEdit={onEdit} />)}
     </ul>
   )

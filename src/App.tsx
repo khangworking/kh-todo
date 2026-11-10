@@ -12,12 +12,12 @@ export default function App() {
   const visibleTodos = todos.filter(todo => filter === 'All' || (filter === 'Completed' ? todo.completed : !todo.completed))
 
   return (
-    <main>
-      <h1>Todo App</h1>
+    <main className="mx-auto my-12 max-w-[40rem] px-5">
+      <h1 className="mb-8">Todo App</h1>
       <TodoInput onAdd={addTodo} />
       {visibleTodos.length > 0 || todos.length === 0 ? (
         <TodoList todos={visibleTodos} onToggle={toggleTodo} onDelete={removeTodo} onEdit={editTodo} />
-      ) : <p className="empty-state">No {filter.toLowerCase()} todos.</p>}
+      ) : <p className="mt-8 text-slate-600">No {filter.toLowerCase()} todos.</p>}
       <TodoFooter activeCount={activeCount} completedCount={todos.length - activeCount} filter={filter} onFilterChange={setFilter} onClearCompleted={clearCompleted} />
     </main>
   )
