@@ -1,9 +1,18 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   font-family: system-ui, sans-serif;
   color: #172033;
   background: #f8fafc;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  color-scheme: light;
+}
+
+.dark {
+  color: #e2e8f0;
+  background: #0f172a;
+  color-scheme: dark;
 }
