@@ -27,9 +27,9 @@ export function TodoInput({ onAdd }: TodoInputProps) {
           onChange={event => setTitle(event.target.value)}
           placeholder="What needs to get done?"
           autoComplete="off"
-          className="min-w-0 flex-1 rounded-lg border border-slate-400 p-3 focus-visible:outline-3 focus-visible:outline-blue-600 focus-visible:outline-offset-3"
+          className="min-w-0 flex-1 rounded-lg border border-slate-400 bg-white p-3 text-slate-900 focus-visible:outline-3 focus-visible:outline-blue-600 focus-visible:outline-offset-3 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus-visible:outline-blue-400"
         />
-        <button type="submit" className="cursor-pointer rounded-lg bg-blue-700 px-4 py-3 text-white hover:bg-blue-800 focus-visible:outline-3 focus-visible:outline-blue-600 focus-visible:outline-offset-3">Add todo</button>
+        <button type="submit" className="cursor-pointer rounded-lg bg-blue-700 px-4 py-3 text-white hover:bg-blue-800 focus-visible:outline-3 focus-visible:outline-blue-600 focus-visible:outline-offset-3 dark:focus-visible:outline-blue-400">Add todo</button>
       </div>
     </form>
   )
