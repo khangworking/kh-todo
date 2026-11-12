@@ -8,7 +8,7 @@ import { useTodos } from './todos/useTodos'
 import { useTheme } from './theme/useTheme'
 
 export default function App() {
-  const { todos, addTodo, toggleTodo, removeTodo, editTodo, clearCompleted } = useTodos()
+  const { todos, addTodo, toggleTodo, removeTodo, editTodo, setNote, clearCompleted } = useTodos()
   const [filter, setFilter] = useState<TodoFilter>('All')
   const { theme, setTheme } = useTheme()
   const activeCount = todos.filter(todo => !todo.completed).length
@@ -22,7 +22,7 @@ export default function App() {
       </header>
       <TodoInput onAdd={addTodo} />
       {visibleTodos.length > 0 || todos.length === 0 ? (
-        <TodoList todos={visibleTodos} onToggle={toggleTodo} onDelete={removeTodo} onEdit={editTodo} />
+        <TodoList todos={visibleTodos} onToggle={toggleTodo} onDelete={removeTodo} onEdit={editTodo} onSetNote={setNote} />
       ) : <p className="mt-8 text-slate-600 dark:text-slate-400">No {filter.toLowerCase()} todos.</p>}
       <TodoFooter activeCount={activeCount} completedCount={todos.length - activeCount} filter={filter} onFilterChange={setFilter} onClearCompleted={clearCompleted} />
     </main>

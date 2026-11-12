@@ -2,8 +2,8 @@ import { expect, test } from 'vitest'
 import { todoReducer } from './todoReducer'
 import type { Todo } from './types'
 
-const first: Todo = { id: '1', title: 'First', completed: false, createdAt: 1 }
-const second: Todo = { id: '2', title: 'Second', completed: true, createdAt: 2 }
+const first: Todo = { id: '1', title: 'First', note: '', completed: false, createdAt: 1 }
+const second: Todo = { id: '2', title: 'Second', note: 'Details', completed: true, createdAt: 2 }
 const todos = [first, second]
 
 test('adds a todo without changing existing state', () => {
@@ -30,6 +30,13 @@ test('edits only the title of the target', () => {
   expect(second.title).toBe('Second')
 })
 
+test('sets a trimmed note and allows removing it', () => {
+  const withNote = todoReducer(todos, { type: 'setNote', id: '1', note: '  Line one\nLine two  ' })
+  expect(withNote).toEqual([{ ...first, note: 'Line one\nLine two' }, second])
+  expect(todoReducer(withNote, { type: 'setNote', id: '1', note: '   ' })).toEqual(todos)
+  expect(first.note).toBe('')
+})
+
 test('clears completed todos and preserves active todos', () => {
   expect(todoReducer(todos, { type: 'clearCompleted' })).toEqual([first])
   expect(todoReducer([second], { type: 'clearCompleted' })).toEqual([])
@@ -40,4 +47,5 @@ test('ignores unknown ids', () => {
   expect(todoReducer(todos, { type: 'toggle', id: 'missing' })).toEqual(todos)
   expect(todoReducer(todos, { type: 'remove', id: 'missing' })).toEqual(todos)
   expect(todoReducer(todos, { type: 'edit', id: 'missing', title: 'Other' })).toEqual(todos)
+  expect(todoReducer(todos, { type: 'setNote', id: 'missing', note: 'Other' })).toEqual(todos)
 })

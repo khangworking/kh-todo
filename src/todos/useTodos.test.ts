@@ -12,10 +12,16 @@ test('starts empty when storage is missing', () => {
   expect(result.current.todos).toEqual([])
 })
 
-test('loads valid saved todos', () => {
+test('loads old saved todos without losing them and defaults missing notes to empty', () => {
   localStorage.setItem(TODOS_STORAGE_KEY, JSON.stringify(saved))
   const { result } = renderHook(useTodos)
-  expect(result.current.todos).toEqual(saved)
+  expect(result.current.todos).toEqual([{ ...saved[0], note: '' }])
+})
+
+test('normalizes non-string saved notes without losing the todo', () => {
+  localStorage.setItem(TODOS_STORAGE_KEY, JSON.stringify([{ ...saved[0], note: 123 }]))
+  const { result } = renderHook(useTodos)
+  expect(result.current.todos).toEqual([{ ...saved[0], note: '' }])
 })
 
 test.each(['{broken', 'null', '{}', '[null]', '[{"id":"bad"}]',
@@ -33,13 +39,16 @@ test('persists each operation and restores the list after remounting', () => {
   }
   act(() => result.current.addTodo('First'))
   const first = result.current.todos[0]
-  expect(first).toEqual({ id: expect.any(String), title: 'First', completed: false, createdAt: expect.any(Number) })
+  expect(first).toEqual({ id: expect.any(String), title: 'First', note: '', completed: false, createdAt: expect.any(Number) })
   expectPersisted()
   act(() => result.current.addTodo('Second'))
   expect(result.current.todos[1].id).not.toBe(first.id)
   expectPersisted()
   act(() => result.current.editTodo(first.id, 'Edited'))
   expect(result.current.todos[0].title).toBe('Edited')
+  expectPersisted()
+  act(() => result.current.setNote(first.id, '  Remember this  '))
+  expect(result.current.todos[0].note).toBe('Remember this')
   expectPersisted()
   act(() => result.current.toggleTodo(first.id))
   expect(result.current.todos[0].completed).toBe(true)
