@@ -64,13 +64,13 @@ export function TodoItem({ todo, onToggle, onDelete, onEdit, onSetNote }: TodoIt
           }}
         />
       ) : (
-        <label className="flex min-w-0 flex-1 cursor-pointer items-start gap-3">
-          <input type="checkbox" className="mt-0.5 h-5 w-5 shrink-0 accent-blue-700 focus-visible:outline-3 focus-visible:outline-blue-600 focus-visible:outline-offset-3 dark:accent-blue-500 dark:focus-visible:outline-blue-400" checked={todo.completed} onChange={() => onToggle(todo.id)} />
-          <span className="min-w-0">
+        <div className="min-w-0 flex-1">
+          <label className="flex cursor-pointer items-start gap-3">
+            <input type="checkbox" className="mt-0.5 h-5 w-5 shrink-0 accent-blue-700 focus-visible:outline-3 focus-visible:outline-blue-600 focus-visible:outline-offset-3 dark:accent-blue-500 dark:focus-visible:outline-blue-400" checked={todo.completed} onChange={() => onToggle(todo.id)} />
             <span className={todo.completed ? 'block wrap-anywhere text-slate-500 line-through dark:text-slate-400' : 'block wrap-anywhere'} onDoubleClick={startEditing}>{todo.title}</span>
-            {todo.note && <span className="mt-1 block whitespace-pre-wrap wrap-anywhere text-sm text-slate-600 dark:text-slate-400">{todo.note}</span>}
-          </span>
-        </label>
+          </label>
+          {todo.note && <p className="mt-1 ml-8 whitespace-pre-wrap wrap-anywhere text-sm text-slate-600 dark:text-slate-400">{todo.note}</p>}
+        </div>
       )}
       {onEdit && !editing && <button className="cursor-pointer rounded-md border border-slate-400 bg-white px-3 py-2 text-slate-900 focus-visible:outline-3 focus-visible:outline-blue-600 focus-visible:outline-offset-3 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus-visible:outline-blue-400" type="button" aria-label={`Edit ${todo.title}`} onClick={startEditing}>Edit</button>}
       {!editing && <button className="cursor-pointer rounded-md border border-slate-400 bg-white px-3 py-2 text-slate-900 focus-visible:outline-3 focus-visible:outline-blue-600 focus-visible:outline-offset-3 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus-visible:outline-blue-400" type="button" aria-label={`${todo.note ? 'Edit' : 'Add'} note for ${todo.title}`} onClick={startNoteEditing}>Note</button>}

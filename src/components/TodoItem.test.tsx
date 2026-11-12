@@ -64,6 +64,15 @@ test('edits an existing note and saves with the Save button', () => {
   expect(onSetNote).toHaveBeenCalledExactlyOnceWith('1', 'Updated note')
 })
 
+test('keeps the note outside the checkbox label', () => {
+  const onToggle = vi.fn()
+  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: 'Extra details', completed: false, createdAt: 1 }} onToggle={onToggle} onDelete={vi.fn()} onSetNote={vi.fn()} /></ul>)
+  expect(screen.getByRole('checkbox', { name: 'Original' })).toBeInTheDocument()
+  expect(screen.queryByRole('checkbox', { name: 'Original Extra details' })).not.toBeInTheDocument()
+  fireEvent.click(screen.getByText('Extra details'))
+  expect(onToggle).not.toHaveBeenCalled()
+})
+
 test.each(['Cancel', 'Escape'])('%s cancels note changes', trigger => {
   const onSetNote = vi.fn()
   render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: 'Saved note', completed: false, createdAt: 1 }} onToggle={vi.fn()} onDelete={vi.fn()} onSetNote={onSetNote} /></ul>)
