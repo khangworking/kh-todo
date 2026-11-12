@@ -10,6 +10,8 @@ export function todoReducer(todos: Todo[], action: TodoAction): Todo[] {
       return todos.filter(todo => todo.id !== action.id)
     case 'edit':
       return todos.map(todo => todo.id === action.id ? { ...todo, title: action.title } : todo)
+    case 'setNote':
+      return todos.map(todo => todo.id === action.id ? { ...todo, note: action.note.trim() } : todo)
     case 'clearCompleted':
       return todos.filter(todo => !todo.completed)
   }

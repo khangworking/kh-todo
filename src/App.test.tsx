@@ -56,3 +56,21 @@ test('restores titles and completion after remounting', () => {
   render(<App />)
   expect(screen.getByRole('checkbox', { name: 'Remember me' })).toBeChecked()
 })
+
+test('adds, removes, and restores a note after remounting', () => {
+  const { unmount } = render(<App />)
+  addTodo('Document this')
+  fireEvent.click(screen.getByRole('button', { name: 'Add note for Document this' }))
+  fireEvent.change(screen.getByRole('textbox', { name: 'Note for Document this' }), { target: { value: '  First line\nSecond line  ' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+  expect(screen.getByText(/First line\s+Second line/)).toBeInTheDocument()
+
+  unmount()
+  render(<App />)
+  expect(screen.getByText(/First line\s+Second line/)).toBeInTheDocument()
+  fireEvent.click(screen.getByRole('button', { name: 'Edit note for Document this' }))
+  fireEvent.change(screen.getByRole('textbox', { name: 'Note for Document this' }), { target: { value: '   ' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+  expect(screen.queryByText(/First line\s+Second line/)).not.toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Add note for Document this' })).toBeInTheDocument()
+})
