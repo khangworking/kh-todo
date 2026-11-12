@@ -3,12 +3,13 @@ import { TodoInput } from './components/TodoInput'
 import { TodoList } from './components/TodoList'
 import { TodoFooter } from './components/TodoFooter'
 import { ThemeToggle } from './components/ThemeToggle'
+import { ProjectPanel } from './components/ProjectPanel'
 import type { TodoFilter } from './components/TodoFooter'
 import { useProjects } from './projects/useProjects'
 import { useTheme } from './theme/useTheme'
 
 export default function App() {
-  const { todos, addTodo, toggleTodo, removeTodo, editTodo, setNote, clearCompleted } = useProjects()
+  const { projects, activeProject, todos, createProject, updateProject, deleteProject, selectProject, addTodo, toggleTodo, removeTodo, editTodo, setNote, clearCompleted } = useProjects()
   const [filter, setFilter] = useState<TodoFilter>('All')
   const { theme, setTheme } = useTheme()
   const activeCount = todos.filter(todo => !todo.completed).length
@@ -20,6 +21,7 @@ export default function App() {
         <h1>Todo App</h1>
         <ThemeToggle theme={theme} onChange={setTheme} />
       </header>
+      <ProjectPanel projects={projects} activeProject={activeProject} todoCount={todos.length} incompleteCount={activeCount} onSelect={selectProject} onCreate={createProject} onUpdate={updateProject} onDelete={deleteProject} onProjectChange={() => setFilter('All')} />
       <TodoInput onAdd={addTodo} />
       {visibleTodos.length > 0 || todos.length === 0 ? (
         <TodoList todos={visibleTodos} onToggle={toggleTodo} onDelete={removeTodo} onEdit={editTodo} onSetNote={setNote} />
