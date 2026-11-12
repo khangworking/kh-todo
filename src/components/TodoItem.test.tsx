@@ -6,7 +6,7 @@ function setup(note = '') {
   const onEdit = vi.fn()
   const onDelete = vi.fn()
   const onSetNote = vi.fn()
-  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note, completed: false, createdAt: 1 }} onToggle={vi.fn()} onEdit={onEdit} onDelete={onDelete} onSetNote={onSetNote} /></ul>)
+  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note, projectId: 'project-1', completed: false, createdAt: 1 }} onToggle={vi.fn()} onEdit={onEdit} onDelete={onDelete} onSetNote={onSetNote} /></ul>)
   fireEvent.doubleClick(screen.getByText('Original'))
   return { onEdit, onDelete, onSetNote, input: screen.getByRole('textbox', { name: 'Edit Original' }) }
 }
@@ -44,7 +44,7 @@ test.each(['Enter', 'blur'])('deletes whitespace-only titles on %s', trigger => 
 
 test('adds a note and supports Ctrl+Enter to save', () => {
   const onSetNote = vi.fn()
-  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: '', completed: false, createdAt: 1 }} onToggle={vi.fn()} onDelete={vi.fn()} onSetNote={onSetNote} /></ul>)
+  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: '', projectId: 'project-1', completed: false, createdAt: 1 }} onToggle={vi.fn()} onDelete={vi.fn()} onSetNote={onSetNote} /></ul>)
   fireEvent.click(screen.getByRole('button', { name: 'Add note for Original' }))
   const textarea = screen.getByRole('textbox', { name: 'Note for Original' })
   expect(textarea).toHaveFocus()
@@ -56,7 +56,7 @@ test('adds a note and supports Ctrl+Enter to save', () => {
 
 test('edits an existing note and saves with the Save button', () => {
   const onSetNote = vi.fn()
-  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: 'Old note', completed: false, createdAt: 1 }} onToggle={vi.fn()} onDelete={vi.fn()} onSetNote={onSetNote} /></ul>)
+  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: 'Old note', projectId: 'project-1', completed: false, createdAt: 1 }} onToggle={vi.fn()} onDelete={vi.fn()} onSetNote={onSetNote} /></ul>)
   expect(screen.getByText('Old note')).toBeInTheDocument()
   fireEvent.click(screen.getByRole('button', { name: 'Edit note for Original' }))
   fireEvent.change(screen.getByRole('textbox', { name: 'Note for Original' }), { target: { value: 'Updated note' } })
@@ -66,7 +66,7 @@ test('edits an existing note and saves with the Save button', () => {
 
 test('keeps the note outside the checkbox label', () => {
   const onToggle = vi.fn()
-  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: 'Extra details', completed: false, createdAt: 1 }} onToggle={onToggle} onDelete={vi.fn()} onSetNote={vi.fn()} /></ul>)
+  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: 'Extra details', projectId: 'project-1', completed: false, createdAt: 1 }} onToggle={onToggle} onDelete={vi.fn()} onSetNote={vi.fn()} /></ul>)
   expect(screen.getByRole('checkbox', { name: 'Original' })).toBeInTheDocument()
   expect(screen.queryByRole('checkbox', { name: 'Original Extra details' })).not.toBeInTheDocument()
   fireEvent.click(screen.getByText('Extra details'))
@@ -75,7 +75,7 @@ test('keeps the note outside the checkbox label', () => {
 
 test.each(['Cancel', 'Escape'])('%s cancels note changes', trigger => {
   const onSetNote = vi.fn()
-  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: 'Saved note', completed: false, createdAt: 1 }} onToggle={vi.fn()} onDelete={vi.fn()} onSetNote={onSetNote} /></ul>)
+  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: 'Saved note', projectId: 'project-1', completed: false, createdAt: 1 }} onToggle={vi.fn()} onDelete={vi.fn()} onSetNote={onSetNote} /></ul>)
   fireEvent.click(screen.getByRole('button', { name: 'Edit note for Original' }))
   const textarea = screen.getByRole('textbox', { name: 'Note for Original' })
   fireEvent.change(textarea, { target: { value: 'Discard me' } })
@@ -87,7 +87,7 @@ test.each(['Cancel', 'Escape'])('%s cancels note changes', trigger => {
 
 test('saving a whitespace-only note requests note removal', () => {
   const onSetNote = vi.fn()
-  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: 'Saved note', completed: false, createdAt: 1 }} onToggle={vi.fn()} onDelete={vi.fn()} onSetNote={onSetNote} /></ul>)
+  render(<ul><TodoItem todo={{ id: '1', title: 'Original', note: 'Saved note', projectId: 'project-1', completed: false, createdAt: 1 }} onToggle={vi.fn()} onDelete={vi.fn()} onSetNote={onSetNote} /></ul>)
   fireEvent.click(screen.getByRole('button', { name: 'Edit note for Original' }))
   fireEvent.change(screen.getByRole('textbox', { name: 'Note for Original' }), { target: { value: '   ' } })
   fireEvent.click(screen.getByRole('button', { name: 'Save' }))

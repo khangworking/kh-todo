@@ -2,6 +2,7 @@ export interface Todo {
   id: string
   title: string
   note: string
+  projectId: string
   completed: boolean
   createdAt: number
 }
@@ -12,4 +13,4 @@ export type TodoAction =
   | { type: 'remove'; id: string }
   | { type: 'edit'; id: string; title: string }
   | { type: 'setNote'; id: string; note: string }
-  | { type: 'clearCompleted' }
+  | { type: 'clearCompleted'; projectId?: string }

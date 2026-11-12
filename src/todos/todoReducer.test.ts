@@ -2,8 +2,8 @@ import { expect, test } from 'vitest'
 import { todoReducer } from './todoReducer'
 import type { Todo } from './types'
 
-const first: Todo = { id: '1', title: 'First', note: '', completed: false, createdAt: 1 }
-const second: Todo = { id: '2', title: 'Second', note: 'Details', completed: true, createdAt: 2 }
+const first: Todo = { id: '1', title: 'First', note: '', projectId: 'project-1', completed: false, createdAt: 1 }
+const second: Todo = { id: '2', title: 'Second', note: 'Details', projectId: 'project-1', completed: true, createdAt: 2 }
 const todos = [first, second]
 
 test('adds a todo without changing existing state', () => {

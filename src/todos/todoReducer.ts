@@ -13,6 +13,6 @@ export function todoReducer(todos: Todo[], action: TodoAction): Todo[] {
     case 'setNote':
       return todos.map(todo => todo.id === action.id ? { ...todo, note: action.note.trim() } : todo)
     case 'clearCompleted':
-      return todos.filter(todo => !todo.completed)
+      return todos.filter(todo => !todo.completed || (action.projectId !== undefined && todo.projectId !== action.projectId))
   }
 }
