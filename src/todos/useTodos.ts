@@ -1,5 +1,3 @@
-import { useEffect, useReducer } from 'react'
-import { todoReducer } from './todoReducer'
 import type { Todo } from './types'
 
 export const TODOS_STORAGE_KEY = 'todoapp.todos'
@@ -29,30 +27,5 @@ export function loadTodos(validProjectIds: ReadonlySet<string>, fallbackProjectI
     }))
   } catch {
     return []
-  }
-}
-
-export function useTodos(projectId = 'default') {
-  const [todos, dispatch] = useReducer(todoReducer, undefined, () => loadTodos(new Set([projectId]), projectId))
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(TODOS_STORAGE_KEY, JSON.stringify(todos))
-    } catch {
-      // Keep the in-memory list usable when browser storage is unavailable or full.
-    }
-  }, [todos])
-
-  return {
-    todos,
-    addTodo: (title: string) => dispatch({
-      type: 'add',
-      todo: { id: crypto.randomUUID(), title, note: '', projectId, completed: false, createdAt: Date.now() },
-    }),
-    toggleTodo: (id: string) => dispatch({ type: 'toggle', id }),
-    removeTodo: (id: string) => dispatch({ type: 'remove', id }),
-    editTodo: (id: string, title: string) => dispatch({ type: 'edit', id, title }),
-    setNote: (id: string, note: string) => dispatch({ type: 'setNote', id, note }),
-    clearCompleted: () => dispatch({ type: 'clearCompleted', projectId }),
   }
 }

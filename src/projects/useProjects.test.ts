@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react'
-import { beforeEach, expect, test } from 'vitest'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import { TODOS_STORAGE_KEY } from '../todos/useTodos'
 import { ACTIVE_PROJECT_STORAGE_KEY, PROJECTS_STORAGE_KEY, useProjects } from './useProjects'
 import type { Project } from './types'
@@ -8,6 +8,7 @@ const first: Project = { id: 'p1', name: 'First', description: '', dueDate: null
 const second: Project = { id: 'p2', name: 'Second', description: 'Details', dueDate: '2026-12-31', createdAt: 2 }
 
 beforeEach(() => localStorage.clear())
+afterEach(() => vi.restoreAllMocks())
 
 test('migrates legacy todos with notes into a default My Todos project', () => {
   localStorage.setItem(TODOS_STORAGE_KEY, JSON.stringify([
@@ -21,6 +22,33 @@ test('migrates legacy todos with notes into a default My Todos project', () => {
   expect(result.current.todos).toEqual([
     { id: 't1', title: 'Legacy', note: 'Keep this', projectId: result.current.activeProjectId, completed: false, createdAt: 1 },
   ])
+})
+
+test('normalizes missing and non-string legacy notes without losing todos', () => {
+  localStorage.setItem(TODOS_STORAGE_KEY, JSON.stringify([
+    { id: 't1', title: 'Missing note', completed: false, createdAt: 1 },
+    { id: 't2', title: 'Invalid note', note: 123, completed: true, createdAt: 2 },
+  ]))
+  const { result } = renderHook(useProjects)
+  expect(result.current.todos.map(todo => ({ title: todo.title, note: todo.note }))).toEqual([
+    { title: 'Missing note', note: '' },
+    { title: 'Invalid note', note: '' },
+  ])
+})
+
+test.each(['{broken', 'null', '{}', '[null]', '[{"id":"bad"}]'])('falls back to an empty todo list for invalid legacy data: %s', value => {
+  localStorage.setItem(TODOS_STORAGE_KEY, value)
+  const { result } = renderHook(useProjects)
+  expect(result.current.todos).toEqual([])
+})
+
+test('keeps the workspace usable when storage access throws', () => {
+  vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('Denied') })
+  vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('Full') })
+  const { result } = renderHook(useProjects)
+  expect(result.current.projects).toHaveLength(1)
+  act(() => result.current.addTodo('In memory'))
+  expect(result.current.todos[0].title).toBe('In memory')
 })
 
 test('falls back to the first project when the saved active id is invalid', () => {

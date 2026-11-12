@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, expect, test } from 'vitest'
 import App from './App'
+import { ACTIVE_PROJECT_STORAGE_KEY, PROJECTS_STORAGE_KEY } from './projects/useProjects'
+import { TODOS_STORAGE_KEY } from './todos/useTodos'
 
 beforeEach(() => localStorage.clear())
 
@@ -73,4 +75,23 @@ test('adds, removes, and restores a note after remounting', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Save' }))
   expect(screen.queryByText(/First line\s+Second line/)).not.toBeInTheDocument()
   expect(screen.getByRole('button', { name: 'Add note for Document this' })).toBeInTheDocument()
+})
+
+test('switches project todo lists and resets the filter to All', () => {
+  localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify([
+    { id: 'p1', name: 'Personal', description: '', dueDate: null, createdAt: 1 },
+    { id: 'p2', name: 'Work', description: '', dueDate: null, createdAt: 2 },
+  ]))
+  localStorage.setItem(ACTIVE_PROJECT_STORAGE_KEY, 'p1')
+  localStorage.setItem(TODOS_STORAGE_KEY, JSON.stringify([
+    { id: 't1', title: 'Personal active', note: '', projectId: 'p1', completed: false, createdAt: 1 },
+    { id: 't2', title: 'Work done', note: '', projectId: 'p2', completed: true, createdAt: 2 },
+  ]))
+  render(<App />)
+  fireEvent.click(screen.getByRole('button', { name: 'Active' }))
+  expect(screen.getByRole('button', { name: 'Active' })).toHaveAttribute('aria-pressed', 'true')
+  fireEvent.change(screen.getByRole('combobox', { name: 'Project' }), { target: { value: 'p2' } })
+  expect(screen.getByRole('checkbox', { name: 'Work done' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'All' })).toHaveAttribute('aria-pressed', 'true')
+  expect(screen.getByText('0 items left')).toBeInTheDocument()
 })
