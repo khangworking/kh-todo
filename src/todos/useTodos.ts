@@ -4,7 +4,7 @@ import type { Todo } from './types'
 
 export const TODOS_STORAGE_KEY = 'todoapp.todos'
 
-type StoredTodo = Omit<Todo, 'note'> & { note?: unknown }
+type StoredTodo = Omit<Todo, 'note' | 'projectId'> & { note?: unknown; projectId?: unknown }
 
 function isTodo(value: unknown): value is StoredTodo {
   if (typeof value !== 'object' || value === null) return false
@@ -16,18 +16,24 @@ function isTodo(value: unknown): value is StoredTodo {
     && Number.isFinite(todo.createdAt)
 }
 
-function loadTodos(): Todo[] {
+export function loadTodos(validProjectIds: ReadonlySet<string>, fallbackProjectId: string): Todo[] {
   try {
     const value: unknown = JSON.parse(localStorage.getItem(TODOS_STORAGE_KEY) ?? '[]')
     if (!Array.isArray(value) || !value.every(isTodo)) return []
-    return value.map(todo => ({ ...todo, note: typeof todo.note === 'string' ? todo.note : '' }))
+    return value.map(todo => ({
+      ...todo,
+      note: typeof todo.note === 'string' ? todo.note : '',
+      projectId: typeof todo.projectId === 'string' && validProjectIds.has(todo.projectId)
+        ? todo.projectId
+        : fallbackProjectId,
+    }))
   } catch {
     return []
   }
 }
 
-export function useTodos() {
-  const [todos, dispatch] = useReducer(todoReducer, undefined, loadTodos)
+export function useTodos(projectId = 'default') {
+  const [todos, dispatch] = useReducer(todoReducer, undefined, () => loadTodos(new Set([projectId]), projectId))
 
   useEffect(() => {
     try {
@@ -41,12 +47,12 @@ export function useTodos() {
     todos,
     addTodo: (title: string) => dispatch({
       type: 'add',
-      todo: { id: crypto.randomUUID(), title, note: '', completed: false, createdAt: Date.now() },
+      todo: { id: crypto.randomUUID(), title, note: '', projectId, completed: false, createdAt: Date.now() },
     }),
     toggleTodo: (id: string) => dispatch({ type: 'toggle', id }),
     removeTodo: (id: string) => dispatch({ type: 'remove', id }),
     editTodo: (id: string, title: string) => dispatch({ type: 'edit', id, title }),
     setNote: (id: string, note: string) => dispatch({ type: 'setNote', id, note }),
-    clearCompleted: () => dispatch({ type: 'clearCompleted' }),
+    clearCompleted: () => dispatch({ type: 'clearCompleted', projectId }),
   }
 }

@@ -4,11 +4,11 @@ import { TodoList } from './components/TodoList'
 import { TodoFooter } from './components/TodoFooter'
 import { ThemeToggle } from './components/ThemeToggle'
 import type { TodoFilter } from './components/TodoFooter'
-import { useTodos } from './todos/useTodos'
+import { useProjects } from './projects/useProjects'
 import { useTheme } from './theme/useTheme'
 
 export default function App() {
-  const { todos, addTodo, toggleTodo, removeTodo, editTodo, setNote, clearCompleted } = useTodos()
+  const { todos, addTodo, toggleTodo, removeTodo, editTodo, setNote, clearCompleted } = useProjects()
   const [filter, setFilter] = useState<TodoFilter>('All')
   const { theme, setTheme } = useTheme()
   const activeCount = todos.filter(todo => !todo.completed).length
