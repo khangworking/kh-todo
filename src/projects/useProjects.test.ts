@@ -48,7 +48,7 @@ test('keeps the workspace usable when storage access throws', () => {
   const { result } = renderHook(useProjects)
   expect(result.current.projects).toHaveLength(1)
   act(() => result.current.addTodo('In memory'))
-  expect(result.current.todos[0].title).toBe('In memory')
+  expect(result.current.todos[0].title).toBe('In Memory')
 })
 
 test('falls back to the first project when the saved active id is invalid', () => {
@@ -64,14 +64,33 @@ test('assigns new todos to and filters them by the active project', () => {
   localStorage.setItem(ACTIVE_PROJECT_STORAGE_KEY, first.id)
   const { result } = renderHook(useProjects)
   act(() => result.current.addTodo('First todo'))
-  expect(result.current.todos.map(todo => todo.title)).toEqual(['First todo'])
+  expect(result.current.todos.map(todo => todo.title)).toEqual(['First Todo'])
   expect(result.current.todos[0].projectId).toBe(first.id)
 
   act(() => result.current.selectProject(second.id))
   expect(result.current.todos).toEqual([])
   act(() => result.current.addTodo('Second todo'))
-  expect(result.current.todos.map(todo => todo.title)).toEqual(['Second todo'])
+  expect(result.current.todos.map(todo => todo.title)).toEqual(['Second Todo'])
   expect(result.current.allTodos).toHaveLength(2)
+})
+
+test('titleizes new and edited todos without changing notes or project names', () => {
+  const { result } = renderHook(useProjects)
+  act(() => result.current.addTodo('fix API bug'))
+  expect(result.current.todos[0].title).toBe('Fix API Bug')
+  act(() => result.current.setNote(result.current.todos[0].id, 'note stays lowercase'))
+  act(() => result.current.editTodo(result.current.todos[0].id, 'mua sữa'))
+  expect(result.current.todos[0].title).toBe('Mua Sữa')
+  expect(result.current.todos[0].note).toBe('note stays lowercase')
+  expect(result.current.activeProject.name).toBe('My Todos')
+})
+
+test('does not titleize existing stored todos', () => {
+  localStorage.setItem(TODOS_STORAGE_KEY, JSON.stringify([
+    { id: 't1', title: 'keep my old casing', note: '', completed: false, createdAt: 1 },
+  ]))
+  const { result } = renderHook(useProjects)
+  expect(result.current.todos[0].title).toBe('keep my old casing')
 })
 
 test('clearCompleted affects only the active project', () => {
@@ -112,5 +131,5 @@ test('persists project CRUD, selection, and todos across remounts', () => {
 
   const restored = renderHook(useProjects)
   expect(restored.result.current.activeProjectId).toBe(projectId)
-  expect(restored.result.current.todos.map(todo => todo.title)).toEqual(['Ship it'])
+  expect(restored.result.current.todos.map(todo => todo.title)).toEqual(['Ship It'])
 })

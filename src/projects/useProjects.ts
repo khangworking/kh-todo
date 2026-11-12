@@ -2,6 +2,7 @@ import { useEffect, useReducer } from 'react'
 import { todoReducer } from '../todos/todoReducer'
 import type { Todo, TodoAction } from '../todos/types'
 import { loadTodos, TODOS_STORAGE_KEY } from '../todos/useTodos'
+import { titleize } from '../todos/titleize'
 import { isDueDate, projectReducer } from './projectReducer'
 import type { Project, ProjectAction, ProjectState } from './types'
 
@@ -133,7 +134,7 @@ export function useProjects() {
         type: 'add',
         todo: {
           id: crypto.randomUUID(),
-          title,
+          title: titleize(title),
           note: '',
           projectId: state.activeProjectId,
           completed: false,
@@ -143,7 +144,7 @@ export function useProjects() {
     }),
     toggleTodo: (id: string) => dispatch({ type: 'todo', action: { type: 'toggle', id } }),
     removeTodo: (id: string) => dispatch({ type: 'todo', action: { type: 'remove', id } }),
-    editTodo: (id: string, title: string) => dispatch({ type: 'todo', action: { type: 'edit', id, title } }),
+    editTodo: (id: string, title: string) => dispatch({ type: 'todo', action: { type: 'edit', id, title: titleize(title) } }),
     setNote: (id: string, note: string) => dispatch({ type: 'todo', action: { type: 'setNote', id, note } }),
     clearCompleted: () => dispatch({
       type: 'todo',
